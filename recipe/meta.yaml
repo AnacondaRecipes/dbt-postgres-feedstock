@@ -6,23 +6,27 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/dbt_postgres-{{ version }}.tar.gz
-  sha256: b0574e9e1e66d8a5cd627b1d464ec0278eef7342f0b5babe4f987eee9d02a143
+  #url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/dbt_postgres-{{ version }}.tar.gz
+  #sha256: b0574e9e1e66d8a5cd627b1d464ec0278eef7342f0b5babe4f987eee9d02a143
+  url: https://github.com/dbt-labs/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 9db8a5436e4e192009c2e0fb05e3f0b0be82ab12a4a9c4b978643c969fb33003
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: True  # [py<39 or py>312]
 
 requirements:
   host:
-    - python {{ python_min }}
+    - python
     - hatchling
     - pip
+    - wheel
+    - setuptools
   run:
     # Note: psycopg2-binary is noarch, and works also for linux, so instead of adding
     # an os-dependent requirement, we instead use psycopg2-binary for simplicity.
-    - python >={{ python_min }}
+    - python
     - psycopg2-binary >=2.9,<3.0
     - dbt-adapters >=1.7.0,<2.0
     - dbt-core >=1.8.0
@@ -30,19 +34,26 @@ requirements:
     - agate >=1.0,<2.0
 
 test:
+  #source_files:
+  #  - tests
   imports:
     - dbt.adapters.postgres
   commands:
     - pip check
+   # - pytest -vvv tests/
   requires:
-    - python {{ python_min }}
     - pip
+    - pytest
 
 about:
   home: https://github.com/dbt-labs/dbt-postgres
   summary: The dbt-postgres package contains all of the code enabling dbt to work with a Postgres database.
   license: Apache-2.0
   license_file: LICENSE
+  license_family: Apache
+  dev_url: https://github.com/dbt-labs/dbt-postgres
+  doc_url: https://docs.getdbt.com/
+  description: dbt enables data analysts and engineers to transform their data using the same practices that software engineers use to build applications.
 
 extra:
   recipe-maintainers:

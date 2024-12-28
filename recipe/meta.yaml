@@ -18,6 +18,7 @@ build:
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   # dbt-core from 3.9 to 3.11
   skip: True  # [py<39 or py>311]
+  skip: True  # [s390x]
 
 requirements:
   build: 

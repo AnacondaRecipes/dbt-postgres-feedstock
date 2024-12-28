@@ -10,13 +10,19 @@ source:
   #sha256: b0574e9e1e66d8a5cd627b1d464ec0278eef7342f0b5babe4f987eee9d02a143
   url: https://github.com/dbt-labs/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 9db8a5436e4e192009c2e0fb05e3f0b0be82ab12a4a9c4b978643c969fb33003
+  patches:
+    - patches/0001-Use-psycopg2-instead-of-psycopg2-binary.patch
 
 build:
   number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  skip: True  # [py<39 or py>312]
+  # dbt-core from 3.9 to 3.11
+  skip: True  # [py<39 or py>311]
 
 requirements:
+  build: 
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
     - python
     - hatchling
@@ -27,20 +33,57 @@ requirements:
     # Note: psycopg2-binary is noarch, and works also for linux, so instead of adding
     # an os-dependent requirement, we instead use psycopg2-binary for simplicity.
     - python
-    - psycopg2-binary >=2.9,<3.0
+    # https://anaconda.atlassian.net/browse/PKG-3537?focusedCommentId=193481
+    # psycopg2 on defaults is basically psycopg2-binary (without the bundled/vendored dependencies).
+    - psycopg2 >=2.9,<3.0
     - dbt-adapters >=1.7.0,<2.0
     - dbt-core >=1.8.0
     - dbt-common >=1.0.4,<2.0
     - agate >=1.0,<2.0
 
+# ModuleNotFoundError: No module named 'dbt.tests.adapter'
+# Missing https://github.com/dbt-labs/dbt-tests-adapter
+{% set ignore_tests = "" %}
+{% set ignore_tests = " --ignore=tests/functional/test_catalog.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_aliases.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_basic.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_caching.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_clone.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_column_types.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_concurrency.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_constraints.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_data_types.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_debug.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_empty.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_ephemeral.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_grants.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental_microbatch.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_persist_docs.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_query_comment.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_relations.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_show.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_copy.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_snapshot.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_store_test_failures.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_unit_testing.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_utils.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_seed/test_simple_seed.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_hooks/test_hooks.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/materializations/materialized_view_tests/test_materialized_view.py" %}
+
 test:
-  #source_files:
-  #  - tests
+  source_files:
+    - tests
   imports:
     - dbt.adapters.postgres
   commands:
     - pip check
-   # - pytest -vvv tests/
+    #- PYTHONPATH=$(pwd) pytest -vvv {{ ignore_tests }} tests  # [not win]
+    #'PYTHONPATH' is not recognized as an internal or external command
+    #- set PYTHONPATH=%cd% && pytest -vvv tests/  # [win]
   requires:
     - pip
     - pytest

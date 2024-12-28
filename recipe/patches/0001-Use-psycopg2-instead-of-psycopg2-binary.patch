@@ -1,0 +1,25 @@
+From 907d225e6557d050400908507b2eba1b5c65e403 Mon Sep 17 00:00:00 2001
+From: Andrii Osipov <aosipov@anaconda.com>
+Date: Fri, 27 Dec 2024 17:59:36 -0800
+Subject: [PATCH] Use psycopg2 instead of psycopg2 binary
+
+---
+ pyproject.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pyproject.toml b/pyproject.toml
+index f3aa52c..f884a25 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -23,7 +23,7 @@ classifiers = [
+     "Programming Language :: Python :: 3.12",
+ ]
+ dependencies = [
+-    "psycopg2-binary>=2.9,<3.0",
++    "psycopg2>=2.9,<3.0",
+     "dbt-adapters>=1.7.0,<2.0",
+     # add dbt-core to ensure backwards compatibility of installation, this is not a functional dependency
+     "dbt-core>=1.8.0",
+-- 
+2.39.3 (Apple Git-146)
+

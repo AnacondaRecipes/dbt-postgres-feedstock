@@ -6,8 +6,6 @@ package:
   version: {{ version }}
 
 source:
-  #url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/dbt_postgres-{{ version }}.tar.gz
-  #sha256: b0574e9e1e66d8a5cd627b1d464ec0278eef7342f0b5babe4f987eee9d02a143
   url: https://github.com/dbt-labs/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 9db8a5436e4e192009c2e0fb05e3f0b0be82ab12a4a9c4b978643c969fb33003
   patches:

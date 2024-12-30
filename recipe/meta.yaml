@@ -73,6 +73,14 @@ requirements:
 {% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_hooks/test_hooks.py" %}
 {% set ignore_tests = ignore_tests + " --ignore=tests/functional/materializations/materialized_view_tests/test_materialized_view.py" %}
 
+{% set passed_tests = "" %}
+{% set passed_tests = " tests/functional/test_config.py::TestProfile::test_bad_type" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_from_raw_profiles" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_invalid_credentials" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_target" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_type" %}
+{% set passed_tests = passed_tests + " tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open" %}
+
 test:
   source_files:
     - tests
@@ -90,16 +98,8 @@ test:
     #     Is the server running on that host and accepting TCP/IP connections?
     # Example on how to start psql server:
     # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
-    - |
-      python -m pytest -vvv {{ ignore_tests }} \  [not win]
-      cmd.exe /C "python -m pytest -vvv {{ ignore_tests }} \  [win]
-        tests/functional/test_config.py::TestProfile::test_bad_type \
-        tests/functional/test_config.py::TestProfile::test_from_raw_profiles \
-        tests/functional/test_config.py::TestProfile::test_invalid_credentials \
-        tests/functional/test_config.py::TestProfile::test_missing_target \
-        tests/functional/test_config.py::TestProfile::test_missing_type \
-        tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open  [not win]
-        tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open"  [win]
+    - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}  # [not win]
+    - cmd.exe /C "python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}"  [win]
   requires:
     - pip
     - pytest

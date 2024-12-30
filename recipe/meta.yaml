@@ -90,13 +90,15 @@ test:
     # Example on how to start psql server:
     # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
     - |
-      python -m pytest -vvv {{ ignore_tests }} \
+      python -m pytest -vvv {{ ignore_tests }} \  [not win]
+      cmd.exe /C "python -m pytest -vvv {{ ignore_tests }} \  [win]
         tests/functional/test_config.py::TestProfile::test_bad_type \
         tests/functional/test_config.py::TestProfile::test_from_raw_profiles \
         tests/functional/test_config.py::TestProfile::test_invalid_credentials \
         tests/functional/test_config.py::TestProfile::test_missing_target \
         tests/functional/test_config.py::TestProfile::test_missing_type \
-        tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open
+        tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open  [not win]
+        tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open"  [win]
   requires:
     - pip
     - pytest

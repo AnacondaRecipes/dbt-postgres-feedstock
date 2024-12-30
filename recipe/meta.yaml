@@ -80,7 +80,8 @@ test:
     - dbt.adapters.postgres
   commands:
     - pip check
-    - python -m pytest -vvv tests/unit
+    - python -m pytest -vvv tests/unit  [not win]
+    - cmd.exe /C "python -m pytest -vvv tests/unit"  [win]
     # Only 6 functional tests passed, all other tests in the tests/functional directory needs to build and run docker to start postgres database server.
     # Error message:
     #   raise FailedToConnectError(str(e))

@@ -26,8 +26,6 @@ requirements:
     - python
     - hatchling
     - pip
-    - wheel
-    - setuptools
   run:
     # Note: psycopg2-binary is noarch, and works also for linux, so instead of adding
     # an os-dependent requirement, we instead use psycopg2-binary for simplicity.
@@ -89,7 +87,7 @@ test:
   commands:
     - pip check
     - python -m pytest -vvv tests/unit  [not win]
-    - cmd.exe /C "python -m pytest -vvv tests/unit"  [win]
+    - python -m pytest -vvv tests\unit  [win]
     # Only 6 functional tests passed, all other tests in the tests/functional directory needs to build and run docker to start postgres database server.
     # Error message:
     #   raise FailedToConnectError(str(e))

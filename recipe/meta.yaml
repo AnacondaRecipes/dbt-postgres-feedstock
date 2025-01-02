@@ -96,8 +96,7 @@ test:
     #     Is the server running on that host and accepting TCP/IP connections?
     # Example on how to start psql server:
     # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
-    - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}  # [not win]
-    - cmd.exe /C "python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}"  [win]
+    - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}  
   requires:
     - pip
     - pytest

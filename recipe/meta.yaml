@@ -6,43 +6,110 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/dbt_postgres-{{ version }}.tar.gz
-  sha256: b0574e9e1e66d8a5cd627b1d464ec0278eef7342f0b5babe4f987eee9d02a143
+  url: https://github.com/dbt-labs/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 9db8a5436e4e192009c2e0fb05e3f0b0be82ab12a4a9c4b978643c969fb33003
+  patches:
+    - patches/0001-Use-psycopg2-instead-of-psycopg2-binary.patch
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  # dbt-core from 3.9 to 3.11
+  skip: True  # [py<39 or py>311]
+  skip: True  # [s390x]
 
 requirements:
+  build: 
+    - patch  # [not win]
+    - m2-patch  # [win]
   host:
-    - python {{ python_min }}
+    - python
     - hatchling
     - pip
   run:
     # Note: psycopg2-binary is noarch, and works also for linux, so instead of adding
     # an os-dependent requirement, we instead use psycopg2-binary for simplicity.
-    - python >={{ python_min }}
-    - psycopg2-binary >=2.9,<3.0
+    - python
+    # https://anaconda.atlassian.net/browse/PKG-3537?focusedCommentId=193481
+    # psycopg2 on defaults is basically psycopg2-binary (without the bundled/vendored dependencies).
+    - psycopg2 >=2.9,<3.0
     - dbt-adapters >=1.7.0,<2.0
     - dbt-core >=1.8.0
     - dbt-common >=1.0.4,<2.0
     - agate >=1.0,<2.0
 
+# ModuleNotFoundError: No module named 'dbt.tests.adapter'
+# Missing https://github.com/dbt-labs/dbt-tests-adapter
+{% set ignore_tests = "" %}
+{% set ignore_tests = " --ignore=tests/functional/test_catalog.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_aliases.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_basic.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_caching.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_clone.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_column_types.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_concurrency.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_constraints.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_data_types.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_debug.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_empty.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_ephemeral.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_grants.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental_microbatch.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_persist_docs.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_query_comment.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_relations.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_show.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_copy.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_snapshot.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_store_test_failures.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_unit_testing.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_utils.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_seed/test_simple_seed.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_hooks/test_hooks.py" %}
+{% set ignore_tests = ignore_tests + " --ignore=tests/functional/materializations/materialized_view_tests/test_materialized_view.py" %}
+
+{% set passed_tests = "" %}
+{% set passed_tests = " tests/functional/test_config.py::TestProfile::test_bad_type" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_from_raw_profiles" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_invalid_credentials" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_target" %}
+{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_type" %}
+{% set passed_tests = passed_tests + " tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open" %}
+
 test:
+  source_files:
+    - tests
   imports:
     - dbt.adapters.postgres
   commands:
     - pip check
+    - python -m pytest -vvv tests/unit  [not win]
+    - python -m pytest -vvv tests\unit  [win]
+    # Only 6 functional tests passed, all other tests in the tests/functional directory needs to build and run docker to start postgres database server.
+    # Error message:
+    #   raise FailedToConnectError(str(e))
+    #   dbt.adapters.exceptions.connection.FailedToConnectError: Database Error
+    #   connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+    #     Is the server running on that host and accepting TCP/IP connections?
+    # Example on how to start psql server:
+    # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
+    - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}  
   requires:
-    - python {{ python_min }}
     - pip
+    - pytest
 
 about:
   home: https://github.com/dbt-labs/dbt-postgres
   summary: The dbt-postgres package contains all of the code enabling dbt to work with a Postgres database.
   license: Apache-2.0
   license_file: LICENSE
+  license_family: Apache
+  dev_url: https://github.com/dbt-labs/dbt-postgres
+  doc_url: https://docs.getdbt.com/
+  description: dbt enables data analysts and engineers to transform their data using the same practices that software engineers use to build applications.
 
 extra:
   recipe-maintainers:

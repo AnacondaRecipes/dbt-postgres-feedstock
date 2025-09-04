@@ -12,20 +12,18 @@ source:
     - patches/0001-Use-psycopg2-instead-of-psycopg2-binary.patch
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  # dbt-core from 3.9 to 3.11
-  skip: True  # [py<39 or py>311]
-  skip: True  # [s390x]
+  skip: True  # [py<39]
 
 requirements:
   build: 
     - patch  # [not win]
     - m2-patch  # [win]
   host:
+    - pip
     - python
     - hatchling
-    - pip
   run:
     # Note: psycopg2-binary is noarch, and works also for linux, so instead of adding
     # an os-dependent requirement, we instead use psycopg2-binary for simplicity.
@@ -115,3 +113,5 @@ extra:
   recipe-maintainers:
     - maresb
     - rxm7706
+  skip-lints:
+    - patch_unnecessary

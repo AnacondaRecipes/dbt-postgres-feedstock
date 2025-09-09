@@ -38,44 +38,44 @@ requirements:
 
 # ModuleNotFoundError: No module named 'dbt.tests.adapter'
 # Missing https://github.com/dbt-labs/dbt-tests-adapter
-{% set ignore_tests = "" %}
-{% set ignore_tests = " --ignore=tests/functional/test_catalog.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_aliases.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_basic.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_caching.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_clone.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_column_types.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_concurrency.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_constraints.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_data_types.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_debug.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_empty.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_ephemeral.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_grants.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental_microbatch.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_persist_docs.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_query_comment.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_relations.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_show.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_copy.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_snapshot.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_store_test_failures.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_unit_testing.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_utils.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_seed/test_simple_seed.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_hooks/test_hooks.py" %}
-{% set ignore_tests = ignore_tests + " --ignore=tests/functional/materializations/materialized_view_tests/test_materialized_view.py" %}
-
-{% set passed_tests = "" %}
-{% set passed_tests = " tests/functional/test_config.py::TestProfile::test_bad_type" %}
-{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_from_raw_profiles" %}
-{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_invalid_credentials" %}
-{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_target" %}
-{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_type" %}
-{% set passed_tests = passed_tests + " tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open" %}
+#{% set ignore_tests = "" %}
+#{% set ignore_tests = " --ignore=tests/functional/test_catalog.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_aliases.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/test_store_test_failures.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_basic.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_caching.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_clone.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_column_types.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_concurrency.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_constraints.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_data_types.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_debug.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_empty.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_ephemeral.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_grants.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_incremental_microbatch.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_persist_docs.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_query_comment.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_relations.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_show.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_copy.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_snapshot.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_store_test_failures.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_unit_testing.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_utils.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_simple_seed/test_simple_seed.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/adapter/test_hooks/test_hooks.py" %}
+#{% set ignore_tests = ignore_tests + " --ignore=tests/functional/materializations/materialized_view_tests/test_materialized_view.py" %}
+#
+#{% set passed_tests = "" %}
+#{% set passed_tests = " tests/functional/test_config.py::TestProfile::test_bad_type" %}
+#{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_from_raw_profiles" %}
+#{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_invalid_credentials" %}
+#{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_target" %}
+#{% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_type" %}
+#{% set passed_tests = passed_tests + " tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open" %}
 
 # CI failed with:
 # AttributeError: 'AttrDict' object has no attribute 'cmd'
@@ -109,7 +109,7 @@ about:
   license_file: LICENSE
   license_family: Apache
   dev_url: https://github.com/dbt-labs/dbt-postgres
-  doc_url: https://docs.getdbt.com/
+  doc_url: https://docs.getdbt.com
   description: |
     dbt enables data analysts and engineers to transform their data using the same practices that software engineers use to build applications.
 

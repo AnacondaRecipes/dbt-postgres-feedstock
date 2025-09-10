@@ -97,7 +97,7 @@ test:
     # Tests are not adapted for py313:
     # >   raise AttributeError(item)
     # E   AttributeError: __class_getitem__
-    # Can be fixed with using lates typing_extensions in tests.
+    # Can be fixed with using latest typing_extensions in tests.
     - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}  # [py<313]
   requires:
     - pip

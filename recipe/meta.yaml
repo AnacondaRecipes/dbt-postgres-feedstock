@@ -84,8 +84,11 @@ test:
     - dbt.adapters.postgres
   commands:
     - pip check
-    - python -m pytest -vvv tests/unit  [not win]
-    - python -m pytest -vvv tests\unit  [win]
+    # Tests are not adapted for py313:
+    # >   raise AttributeError(item)
+    # E   AttributeError: __class_getitem__
+    # Can be fixed with using latest typing_extensions in tests.
+    - python -m pytest -vvv tests/unit  # [py<313]
     # Only 6 functional tests passed, all other tests in the tests/functional directory needs to build and run docker to start postgres database server.
     # Error message:
     #   raise FailedToConnectError(str(e))
@@ -94,10 +97,6 @@ test:
     #     Is the server running on that host and accepting TCP/IP connections?
     # Example on how to start psql server:
     # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
-    # Tests are not adapted for py313:
-    # >   raise AttributeError(item)
-    # E   AttributeError: __class_getitem__
-    # Can be fixed with using latest typing_extensions in tests.
     - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}  # [py<313]
   requires:
     - pip

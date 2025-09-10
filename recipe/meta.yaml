@@ -12,7 +12,7 @@ source:
     - patches/0001-Use-psycopg2-instead-of-psycopg2-binary.patch
 
 build:
-  number: 1
+  number: 2
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  # [py<39]
 
@@ -77,30 +77,27 @@ requirements:
 {% set passed_tests = passed_tests + " tests/functional/test_config.py::TestProfile::test_missing_type" %}
 {% set passed_tests = passed_tests + " tests/functional/test_connection_manager.py::TestConnectionManagerOpen::test_open" %}
 
-# CI failed with:
-# AttributeError: 'AttrDict' object has no attribute 'cmd'
-# Tests disabled, anyway --no-test is used because of cyclic dependency.
-#test:
-#  source_files:
-#    - tests
-#  imports:
-#    - dbt.adapters.postgres
-#  commands:
-#    - pip check
-#    - python -m pytest -vvv tests/unit  [not win]
-#    - python -m pytest -vvv tests\unit  [win]
-#    # Only 6 functional tests passed, all other tests in the tests/functional directory needs to build and run docker to start postgres database server.
-#    # Error message:
-#    #   raise FailedToConnectError(str(e))
-#    #   dbt.adapters.exceptions.connection.FailedToConnectError: Database Error
-#    #   connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
-#    #     Is the server running on that host and accepting TCP/IP connections?
-#    # Example on how to start psql server:
-#    # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
-#    - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}
-#  requires:
-#    - pip
-#    - pytest
+test:
+  source_files:
+    - tests
+  imports:
+    - dbt.adapters.postgres
+  commands:
+    - pip check
+    - python -m pytest -vvv tests/unit  [not win]
+    - python -m pytest -vvv tests\unit  [win]
+    # Only 6 functional tests passed, all other tests in the tests/functional directory needs to build and run docker to start postgres database server.
+    # Error message:
+    #   raise FailedToConnectError(str(e))
+    #   dbt.adapters.exceptions.connection.FailedToConnectError: Database Error
+    #   connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+    #     Is the server running on that host and accepting TCP/IP connections?
+    # Example on how to start psql server:
+    # https://github.com/dbt-labs/dbt-postgres/blob/v1.9.0/pyproject.toml#L76
+    - python -m pytest -vvv {{ ignore_tests }} {{ passed_tests }}
+  requires:
+    - pip
+    - pytest
 
 about:
   home: https://github.com/dbt-labs/dbt-postgres
@@ -119,6 +116,3 @@ extra:
     - rxm7706
   skip-lints:
     - patch_unnecessary
-    - missing_imports_or_run_test_py
-    - missing_pip_check
-    - missing_tests

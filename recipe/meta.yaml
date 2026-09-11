@@ -17,8 +17,6 @@ build:
   skip: True  # [py<39]
 
 requirements:
-  build: 
-    - patch  # [not win]
   host:
     - pip
     - python

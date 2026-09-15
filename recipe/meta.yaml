@@ -12,14 +12,11 @@ source:
     - patches/0001-Use-psycopg2-instead-of-psycopg2-binary.patch
 
 build:
-  number: 2
+  number: 3
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: True  # [py<39]
 
 requirements:
-  build: 
-    - patch  # [not win]
-    - m2-patch  # [win]
   host:
     - pip
     - python
